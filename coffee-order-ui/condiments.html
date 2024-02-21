@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Condiment Selection - Coffee Order System</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 100vh;
+            flex-direction: row;
+        }
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+        }
+        .condiments-container, .cart-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 50%;
+        }
+        .condiment-button, .cart-item {
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+        }
+        .confirm-order {
+            padding: 10px 20px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <span>Coffee Order System</span>
+    </div>
+    <div class="condiments-container">
+        <button class="condiment-button" onclick="toggleCondiment('Milk')">Milk</button>
+        <button class="condiment-button" onclick="toggleCondiment('Mocha')">Mocha</button>
+        <button class="condiment-button" onclick="toggleCondiment('Soy')">Soy</button>
+        <button class="condiment-button" onclick="toggleCondiment('Whip')">Whip</button>
+    </div>
+    <div class="cart-container">
+        <div id="cart-items"></div>
+        <button class="confirm-order" onclick="confirmOrder()">Confirm Order</button>
+    </div>
+    <script>
+        let selectedCondiments = [];
+
+        function toggleCondiment(condiment) {
+            const index = selectedCondiments.indexOf(condiment);
+            if (index > -1) {
+                selectedCondiments.splice(index, 1); // Remove condiment if it's already in the array
+            } else {
+                selectedCondiments.push(condiment); // Add condiment if not already in the array
+            }
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartItems = document.getElementById('cart-items');
+            cartItems.innerHTML = ''; // Clear current items
+
+            // Add selected drink
+            const drink = localStorage.getItem('selectedDrink');
+            const drinkItem = document.createElement('div');
+            drinkItem.innerText = drink;
+            drinkItem.classList.add('cart-item');
+            drinkItem.onclick = function() { window.location.href = 'beverage.html'; };
+            cartItems.appendChild(drinkItem);
+
+            // Add selected condiments
+            selectedCondiments.forEach(condiment => {
+                const item = document.createElement('div');
+                item.innerText = condiment;
+                item.classList.add('cart-item');
+                item.onclick = function() { toggleCondiment(condiment); };
+                cartItems.appendChild(item);
+            });
+        }
+
+        function confirmOrder() {
+            const orderDetails = {
+                drink: localStorage.getItem('selectedDrink'),
+                condiments: selectedCondiments
+            };
+            // Example POST request (URL and implementation details would need to be adjusted)
+            fetch('your-api-endpoint', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderDetails),
+            })
+            .then(response => response.json())
+            .then(data => {
+                localStorage.setItem('orderResponse', JSON.stringify(data));
+                window.location.href = 'receipt.html';
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+        updateCart(); // Initialize cart with selected drink
+    </script>
+</body>
+</html>
