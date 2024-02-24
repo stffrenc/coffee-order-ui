@@ -75,7 +75,7 @@
             const drinkItem = document.createElement('div');
             drinkItem.innerText = drink;
             drinkItem.classList.add('cart-item');
-            drinkItem.onclick = function() { window.location.href = 'beverage.html'; };
+            drinkItem.onclick = function() { window.location.href = 'drink-page.html'; }; // Corrected the file name
             cartItems.appendChild(drinkItem);
 
             // Add selected condiments
@@ -89,26 +89,9 @@
         }
 
         function confirmOrder() {
-            const orderDetails = {
-                drink: localStorage.getItem('selectedDrink'),
-                condiments: selectedCondiments
-            };
-            // Example POST request (URL and implementation details would need to be adjusted)
-            fetch('your-api-endpoint', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(orderDetails),
-            })
-            .then(response => response.json())
-            .then(data => {
-                localStorage.setItem('orderResponse', JSON.stringify(data));
-                window.location.href = 'receipt.html';
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+            // Store the selected drink and condiments in localStorage for the Receipt Page
+            localStorage.setItem('selectedCondiments', JSON.stringify(selectedCondiments));
+            window.location.href = 'receipt.html'; // Corrected the file name
         }
 
         updateCart(); // Initialize cart with selected drink

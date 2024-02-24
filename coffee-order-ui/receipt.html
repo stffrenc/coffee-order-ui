@@ -29,30 +29,31 @@
         <div id="receipt-details"></div>
     </div>
     <script>
+        function generateRandomId() {
+            return Math.floor(Math.random() * 1000000);
+        }
+
+        function calculateRandomCost() {
+            // Assuming a base cost of $2.50 plus a random amount up to $5
+            return (2.5 + Math.random() * 5).toFixed(2);
+        }
+
         function displayReceipt() {
-            const orderResponse = JSON.parse(localStorage.getItem('orderResponse'));
+            const drink = localStorage.getItem('selectedDrink');
+            const condiments = JSON.parse(localStorage.getItem('selectedCondiments')) || [];
             const receiptDetailsDiv = document.getElementById('receipt-details');
 
-            // Assuming orderResponse contains id, description, and price
-            if (orderResponse) {
-                const idDiv = document.createElement('div');
-                idDiv.innerText = `Order ID: ${orderResponse.id}`;
-                idDiv.classList.add('receipt-item');
+            const orderId = generateRandomId();
+            const cost = calculateRandomCost();
 
-                const descriptionDiv = document.createElement('div');
-                descriptionDiv.innerText = `Description: ${orderResponse.description}`;
-                descriptionDiv.classList.add('receipt-item');
+            const orderDetails = `Drink: ${drink}\nCondiments: ${condiments.join(', ') || 'None'}`;
+            const receiptHtml = `
+                <div class="receipt-item">Order ID: ${orderId}</div>
+                <div class="receipt-item">${orderDetails}</div>
+                <div class="receipt-item">Cost: $${cost}</div>
+            `;
 
-                const priceDiv = document.createElement('div');
-                priceDiv.innerText = `Price: $${orderResponse.price.toFixed(2)}`;
-                priceDiv.classList.add('receipt-item');
-
-                receiptDetailsDiv.appendChild(idDiv);
-                receiptDetailsDiv.appendChild(descriptionDiv);
-                receiptDetailsDiv.appendChild(priceDiv);
-            } else {
-                receiptDetailsDiv.innerText = 'No order details found.';
-            }
+            receiptDetailsDiv.innerHTML = receiptHtml;
         }
 
         displayReceipt();
