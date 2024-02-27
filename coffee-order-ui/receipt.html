@@ -39,23 +39,20 @@
         }
 
         function displayReceipt() {
-            const drink = localStorage.getItem('selectedDrink');
-            const condiments = JSON.parse(localStorage.getItem('selectedCondiments')) || [];
+            const receipt = JSON.parse(localStorage.getItem('receipt'));
             const receiptDetailsDiv = document.getElementById('receipt-details');
 
-            const orderId = generateRandomId();
-            const cost = calculateRandomCost();
-
-            const orderDetails = `Drink: ${drink}\nCondiments: ${condiments.join(', ') || 'None'}`;
-            const receiptHtml = `
-                <div class="receipt-item">Order ID: ${orderId}</div>
-                <div class="receipt-item">${orderDetails}</div>
-                <div class="receipt-item">Cost: $${cost}</div>
-            `;
-
-            receiptDetailsDiv.innerHTML = receiptHtml;
+            if (receipt) {
+                const receiptHtml = `
+                    <div class="receipt-item">Order ID: ${receipt.id}</div>
+                    <div class="receipt-item">Description: ${receipt.description}</div>
+                    <div class="receipt-item">Cost: $${receipt.cost.toFixed(2)}</div>
+                `;
+                receiptDetailsDiv.innerHTML = receiptHtml;
+            } else {
+                receiptDetailsDiv.innerText = 'No order details found.';
+            }
         }
-
         displayReceipt();
     </script>
 </body>

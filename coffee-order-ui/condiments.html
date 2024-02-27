@@ -89,11 +89,35 @@
         }
 
         function confirmOrder() {
-            // Store the selected drink and condiments in localStorage for the Receipt Page
-            localStorage.setItem('selectedCondiments', JSON.stringify(selectedCondiments));
-            window.location.href = 'receipt.html'; // Corrected the file name
-        }
+            const orderDetails = {
+                beverage: localStorage.getItem('selectedDrink'),
+                condiments: selectedCondiments
+            };
 
+            fetch('https://coffee-order-v4gg.onrender.com/orders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderDetails),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Assuming the backend returns a Receipt object
+                // Store the receipt in localStorage to be retrieved in the Receipt Page
+                localStorage.setItem('receipt', JSON.stringify(data));
+                window.location.href = 'receipt.html';
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert("There was a problem with your order. Please try again.");
+            });
+        }
         updateCart(); // Initialize cart with selected drink
     </script>
 </body>
