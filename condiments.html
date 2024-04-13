@@ -54,6 +54,7 @@
         <button class="confirm-order" onclick="confirmOrder()">Confirm Order</button>
     </div>
     <script>
+        let host = getHost()
         let selectedCondiments = [];
 
         function toggleCondiment(condiment) {
@@ -75,7 +76,7 @@
             const drinkItem = document.createElement('div');
             drinkItem.innerText = drink;
             drinkItem.classList.add('cart-item');
-            drinkItem.onclick = function() { window.location.href = 'beverage.html'; }; // Corrected the file name
+            drinkItem.onclick = function() { window.location.href = 'beverage.html'; };
             cartItems.appendChild(drinkItem);
 
             // Add selected condiments
@@ -94,7 +95,7 @@
                 condiments: selectedCondiments
             };
 
-            fetch('https://coffee-order-v4gg.onrender.com/orders', {
+            fetch(getHost() + "/orders", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -108,8 +109,6 @@
                 return response.json();
             })
             .then(data => {
-                // Assuming the backend returns a Receipt object
-                // Store the receipt in localStorage to be retrieved in the Receipt Page
                 localStorage.setItem('receipt', JSON.stringify(data));
                 window.location.href = 'receipt.html';
             })
